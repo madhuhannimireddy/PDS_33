@@ -1,0 +1,28 @@
+import pandas as pd
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from collections import Counter
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
+
+df = pd.read_csv('Corona_NLP_test.csv')
+
+
+df['tokens'] = df['OriginalTweet'].apply(word_tokenize)
+
+
+stop_words = set(stopwords.words('english'))
+df['tokens'] = df['tokens'].apply(lambda x: [word for word in x if word.lower() not in stop_words])
+
+
+word_freq = Counter()
+df['tokens'].apply(lambda x: word_freq.update(x))
+
+
+wordcloud = WordCloud(width = 1000, height = 500, background_color='white').generate_from_frequencies(word_freq)
+plt.figure(figsize=(15,8))
+plt.imshow(wordcloud)
+plt.axis("off")
+plt.show()
